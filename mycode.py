@@ -17,5 +17,12 @@ merged.fillna(0)
 merged.to_csv("merged.csv", index = False)
 
 #1.1 yearly_publication figure
-pandas.value_counts(merged['Year']).plot.bar()
+#pandas.value_counts((articles['Year'])).plot.bar()
+#articles['Year'].plot(kind = 'hist')
+articles['Article No.'].groupby([articles['Year']]).count().plot(kind='bar')
+plot.title("yearly_publication")
+plot.xlabel("Year")
+plot.ylabel("Articles Published")
 plot.show()
+
+#1.2 yearly_citation figure
