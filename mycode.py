@@ -26,3 +26,18 @@ plot.ylabel("Articles Published")
 plot.show()
 
 #1.2 yearly_citation figure
+articles['Citation'].groupby(articles['Year']).sum().plot(kind = 'bar')
+plot.title("yearly_citation")
+plot.xlabel("Year")
+plot.ylabel("Citations")
+plot.show()
+
+#1.3 Number of publications across countries
+
+#1.4 Top 5 institutions w most published articles
+new_df = merged[['Article No.', 'Author Affiliation']].drop_duplicates()
+new_df = new_df.groupby(['Author Affiliation'])['Article No.'].count().reset_index( name = 'Count').sort_values(['Count'], ascending = False)
+print(new_df[['Author Affiliation', 'Count']].reset_index(drop=True).head(n=5))
+#1.5 Top 5 researchers that have the most h-index
+top_researchers = authors[['Author Name','h-index']].sort_values(['h-index'], ascending = False).head(n=5).reset_index(drop=True)
+print(top_researchers)
