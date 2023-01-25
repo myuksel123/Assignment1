@@ -33,7 +33,9 @@ plot.ylabel("Citations")
 plot.show()
 
 #1.3 Number of publications across countries
-
+countries = merged[['Article No.', 'Country']].drop_duplicates()
+countries = countries.groupby(['Country'])['Article No.'].count().reset_index( name = 'Count').sort_values(['Count'], ascending = False)
+print(countries)
 #1.4 Top 5 institutions w most published articles
 new_df = merged[['Article No.', 'Author Affiliation']].drop_duplicates()
 new_df = new_df.groupby(['Author Affiliation'])['Article No.'].count().reset_index( name = 'Count').sort_values(['Count'], ascending = False)
