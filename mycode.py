@@ -2,6 +2,8 @@ import pandas
 import matplotlib.pyplot as plot
 import pygal
 import country_converter as toCode
+import numpy as np
+import statsmodels.api as sm
 #Problem 1
 
 #read the files
@@ -43,7 +45,6 @@ world.title = 'Articles published by country'
 theConverter = toCode.CountryConverter()
 theCodes = theConverter.pandas_convert(series = countries['Country'], to = 'ISO2')
 countries['countryCode'] = theCodes;
-print(countries);
 world.add('More than 10',countries.query('Count >10')['countryCode'].str.lower())
 world.add('Between 5 and 10', countries.query('Count>10 and Count>=5')['countryCode'].str.lower())
 world.add('Between 2 and 5', countries.query('Count <5 and Count>=2')['countryCode'].str.lower())
@@ -55,9 +56,27 @@ world.render_to_png('world.png');
 new_df = merged[['Article No.', 'Author Affiliation']].drop_duplicates()
 new_df = new_df.groupby(['Author Affiliation'])['Article No.'].count().reset_index( name = 'Count').sort_values(['Count'], ascending = False)
 print(new_df[['Author Affiliation', 'Count']].reset_index(drop=True).head(n=5))
+print()
 
 #1.5 Top 5 researchers that have the most h-index
 top_researchers = authors[['Author Name','h-index']].sort_values(['h-index'], ascending = False).head(n=5).reset_index(drop=True)
 print(top_researchers)
 
 #Beginning of Question 2
+data = pandas.read_csv('data.csv')
+data = data.fillna(0)
+
+print()
+print("The correlation coefficients between the independent variables and the dependent variable")
+#standard correlation coefficient, to see which values effect the dependent
+#variable the most
+print(data.corr(method='pearson')['SUS'].sort_values())
+#it seems that Intent and ASR error, and Purchase have the most significant correlations
+y= data['SUS'] #dependent variable
+x= data[['Purchase','Duration','Gender','ASR_Error','Intent_Error']] #independent variables
+
+x = sm.add_constant(x)
+
+rmodel = sm.OLS(y, x).fit()
+print(rmodel.summary());
+print(data)
