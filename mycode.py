@@ -4,6 +4,8 @@ import pygal
 import country_converter as toCode
 import numpy as np
 import statsmodels.api as sm
+from sklearn.preprocessing import LabelEncoder
+import seaborn as sns
 #Problem 1
 
 #read the files
@@ -66,6 +68,16 @@ print(top_researchers)
 data = pandas.read_csv('data.csv')
 data = data.fillna(0)
 
+
+#need to adjust for categorical variable of gender
+encoder = LabelEncoder()
+encoder.fit(data['Gender'])
+data['Gender'] = encoder.transform(data['Gender'])
+
+#putting on a histogram plot the satisfaction survey results
+sns.histplot(data=data['SUS'], palette='bright')
+plot.show()
+
 print()
 print("The correlation coefficients between the independent variables and the dependent variable")
 #standard correlation coefficient, to see which values effect the dependent
@@ -79,4 +91,3 @@ x = sm.add_constant(x)
 
 rmodel = sm.OLS(y, x).fit()
 print(rmodel.summary());
-print(data)
